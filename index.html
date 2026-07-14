@@ -218,7 +218,29 @@
         .btn-search:active {
             background: #e5e5ea;
         }
+.btn-yahoo {
+    background: #e8f2ff;
+    color: #0066cc;
+    border: 1px solid #66aaff;
+}
 
+.btn-auction {
+    background: #f3e8ff;
+    color: #7a1fa2;
+    border: 1px solid #b388ff;
+}
+
+.btn-rakuma {
+    background: #ffe8ee;
+    color: #d81b60;
+    border: 1px solid #ff80ab;
+}
+
+.btn-mercari {
+    background: #eeeeee;
+    color: #222222;
+    border: 1px solid #999999;
+}
         /* Specific Colors for Results */
         .bg-god { background: var(--color-god) !important; }
         .bg-buy { background: var(--color-buy) !important; }
@@ -317,10 +339,10 @@
     <div class="card">
         <span class="section-title">【相場検索】</span>
         <div class="search-grid">
-            <a href="javascript:void(0)" class="btn-search" onclick="searchMarket('paypay')">Yahooフリマ</a>
-            <a href="javascript:void(0)" class="btn-search" onclick="searchMarket('yahuoku')">ヤフオク</a>
-            <a href="javascript:void(0)" class="btn-search" onclick="searchMarket('rakuma')">ラクマ</a>
-            <a href="javascript:void(0)" class="btn-search" onclick="searchMarket('mercari')">メルカリ</a>
+            <a href="javascript:void(0)" class="btn-search btn-yahoo" onclick="searchMarket('paypay')">Yahooフリマ</a>
+            <a href="javascript:void(0)" class="btn-search btn-auction" onclick="searchMarket('yahuoku')">ヤフオク</a>
+            <a href="javascript:void(0)" class="btn-search btn-rakuma" onclick="searchMarket('rakuma')">ラクマ</a>
+            <a href="javascript:void(0)" class="btn-search btn-mercari" onclick="searchMarket('mercari')">メルカリ</a>
         </div>
     </div>
 </div>
