@@ -3,290 +3,419 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>セドリン | 利益判定アプリ</title>
+    <title>セドリン 📦 | 利益判定アプリ</title>
     <style>
         :root {
-            --primary-color: #2196F3;
-            --buy-color: #4CAF50;
-            --pass-color: #f44336;
             --bg-color: #f0f2f5;
-            --text-color: #333;
+            --card-bg: #ffffff;
+            --primary-color: #007aff;
+            --text-main: #1c1c1e;
+            --text-sub: #8e8e93;
+            --border-radius: 16px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            
+            /* Judgment Colors */
+            --color-god: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            --color-buy: #34c759;
+            --color-mid: #ffcc00;
+            --color-hard: #ff9500;
+            --color-skip: #ff3b30;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             margin: 0;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
+            padding: 20px 16px;
+            line-height: 1.6;
         }
 
         .container {
-            width: 100%;
-            max-width: 450px;
-            background: white;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            box-sizing: border-box;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
         }
 
         h1 {
-            text-align: center;
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        /* Card Style */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
             margin-bottom: 20px;
-            color: var(--primary-color);
         }
 
-        .input-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
+        .section-title {
             font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #666;
+            font-weight: 700;
+            color: var(--text-sub);
+            margin-bottom: 12px;
+            display: block;
         }
 
-        input, select {
+        /* Input Styles */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        input[type="number"], input[type="tel"] {
             width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            box-sizing: border-box;
-            background-color: #fafafa;
-        }
-
-        input:focus, select:focus {
+            padding: 14px;
+            font-size: 18px;
+            border: 2px solid #efeff4;
+            border-radius: 12px;
             outline: none;
-            border-color: var(--primary-color);
-            background-color: #fff;
+            transition: border-color 0.2s;
+            background: #f9f9fb;
         }
 
-        .calc-btn {
+        input:focus {
+            border-color: var(--primary-color);
+            background: #fff;
+        }
+
+        /* Selection Grids */
+        .grid-select {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .shipping-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .chip {
+            position: relative;
+        }
+
+        .chip input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .chip label {
+            display: block;
+            padding: 10px 4px;
+            text-align: center;
+            background: #f2f2f7;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip input:checked + label {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Main Button */
+        .btn-calc {
             width: 100%;
             padding: 18px;
             font-size: 20px;
-            font-weight: bold;
+            font-weight: 800;
             color: white;
-            background-color: var(--primary-color);
+            background: var(--primary-color);
             border: none;
-            border-radius: 12px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+            margin: 10px 0 25px 0;
             cursor: pointer;
-            box-shadow: 0 4px 0 #1976D2;
-            margin-top: 10px;
+            transition: transform 0.1s;
         }
 
-        .calc-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #1976D2;
+        .btn-calc:active {
+            transform: scale(0.98);
         }
 
+        /* Result Area */
         #result-area {
-            margin-top: 25px;
-            display: none; /* 最初は隠す */
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            animation: slideUp 0.3s ease-out;
+            display: none;
+            color: white;
+            transition: all 0.3s ease;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .result-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .result-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+        }
+
+        .result-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .result-value {
+            font-size: 20px;
+            font-weight: 700;
         }
 
         .judgment-text {
             font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-weight: 900;
+            text-align: center;
+            margin: 10px 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .profit-text {
-            font-size: 20px;
+        .stars {
+            font-size: 24px;
+            text-align: center;
             margin-bottom: 5px;
         }
 
-        /* 判定用カラー */
-        .buy-bg { background-color: #e8f5e9; color: #2e7d32; border: 2px solid #4CAF50; }
-        .pass-bg { background-color: #ffebee; color: #c62828; border: 2px solid #f44336; }
-
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            color: #999;
-            margin-top: 20px;
+        /* Search Buttons */
+        .search-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
+
+        .btn-search {
+            padding: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 12px;
+            background: #f2f2f7;
+            color: var(--text-main);
+            border: 1px solid #e5e5ea;
+            transition: background 0.2s;
+        }
+
+        .btn-search:active {
+            background: #e5e5ea;
+        }
+
+        /* Specific Colors for Results */
+        .bg-god { background: var(--color-god) !important; }
+        .bg-buy { background: var(--color-buy) !important; }
+        .bg-mid { background: var(--color-mid) !important; color: #333 !important;}
+        .bg-hard { background: var(--color-hard) !important; }
+        .bg-skip { background: var(--color-skip) !important; }
+        .bg-mid .result-item { background: rgba(0, 0, 0, 0.05); }
+        .bg-mid .result-label { color: #555; }
+        .bg-mid .result-value { color: #000; }
+
+        /* Animation */
+        @keyframes popIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>セドリン 📦</h1>
+    <header>
+        <h1>セドリン 📦</h1>
+    </header>
 
-    <!-- JANコード -->
-    <div class="input-group">
-        <label>JANコード</label>
-        <input type="number" id="janCode" placeholder="バーコード番号（任意）" inputmode="numeric">
+    <div class="card">
+        <div class="input-group">
+            <span class="section-title">JANコード</span>
+            <input type="tel" id="janCode" placeholder="数字を入力" maxlength="13">
+        </div>
+
+        <div class="input-group">
+            <span class="section-title">販売価格 (円)</span>
+            <input type="number" id="sellPrice" placeholder="0" pattern="\[0-9]*">
+        </div>
+
+        <div class="input-group">
+            <span class="section-title">仕入価格 (円)</span>
+            <input type="number" id="costPrice" placeholder="0" pattern="\[0-9]*">
+        </div>
+
+        <span class="section-title">販売先</span>
+        <div class="grid-select">
+            <div class="chip">
+                <input type="radio" name="platform" id="p1" value="0.05" checked>
+                <label for="p1">Yahooフリマ<br>(5%)</label>
+            </div>
+            <div class="chip">
+                <input type="radio" name="platform" id="p2" value="0.10">
+                <label for="p2">ヤフオク<br>(10%)</label>
+            </div>
+            <div class="chip">
+                <input type="radio" name="platform" id="p3" value="0.10">
+                <label for="p3">ラクマ<br>(10%)</label>
+            </div>
+        </div>
+
+        <span class="section-title">送料 (円)</span>
+        <div class="grid-select shipping-grid">
+            <div class="chip"><input type="radio" name="shipping" id="s1" value="160" checked><label for="s1">160</label></div>
+            <div class="chip"><input type="radio" name="shipping" id="s2" value="210"><label for="s2">210</label></div>
+            <div class="chip"><input type="radio" name="shipping" id="s3" value="215"><label for="s3">215</label></div>
+            <div class="chip"><input type="radio" name="shipping" id="s4" value="410"><label for="s4">410</label></div>
+            <div class="chip"><input type="radio" name="shipping" id="s5" value="490"><label for="s5">490</label></div>
+            <div class="chip"><input type="radio" name="shipping" id="s6" value="750"><label for="s6">750</label></div>
+            <div class="chip"><input type="radio" name="shipping" id="s7" value="850"><label for="s7">850</label></div>
+        </div>
     </div>
 
-    <!-- 販売先 -->
-    <div class="input-group">
-        <label>販売先（手数料）</label>
-        <select id="platform">
-            <option value="0.05">Yahooフリマ (5%)</option>
-            <option value="0.10">ヤフオク (10%)</option>
-            <option value="0.10">ラクマ (10%)</option>
-        </select>
+    <button class="btn-calc" onclick="calculate()">利益判定する</button>
+
+    <div id="result-area" class="card">
+        <div class="stars" id="result-stars"></div>
+        <div class="judgment-text" id="result-judgment">判定待ち</div>
+        
+        <div class="result-content">
+            <div class="result-item">
+                <div class="result-label">利益金額</div>
+                <div class="result-value" id="res-profit">0円</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">利益率</div>
+                <div class="result-value" id="res-margin">0%</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">販売手数料</div>
+                <div class="result-value" id="res-fee">0円</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">送料</div>
+                <div class="result-value" id="res-ship">0円</div>
+            </div>
+        </div>
     </div>
 
-    <!-- 販売価格 -->
-    <div class="input-group">
-        <label>販売価格 (円)</label>
-        <input type="number" id="sellPrice" placeholder="例: 5000" inputmode="numeric">
-    </div>
-
-    <!-- 仕入価格 -->
-    <div class="input-group">
-        <label>仕入価格 (円)</label>
-        <input type="number" id="buyPrice" placeholder="例: 2000" inputmode="numeric">
-    </div>
-
-    <!-- 送料 -->
-    <div class="input-group">
-        <label>送料 (円)</label>
-        <select id="shipping">
-            <option value="160">160円 (ミニ等)</option>
-            <option value="210">210円 (ネコポス/ゆうパケ)</option>
-            <option value="215">215円 (ゆうパケポスト)</option>
-            <option value="410">410円 (宅急便コン)</option>
-            <option value="490">490円 (ゆうパケプラス)</option>
-            <option value="750">750円 (60サイズ)</option>
-            <option value="850">850円 (80サイズ)</option>
-        </select>
-    </div>
-
-    <button class="calc-btn" onclick="calculate()">利益判定する</button>
-
-    <!-- 結果表示 -->
-    <div id="result-area">
-        <div id="judgment" class="judgment-text"></div>
-        <div class="profit-text">利益: <span id="profitAmount"></span> 円</div>
-        <div id="feeDetail" style="font-size: 14px; opacity: 0.8;"></div>
-    </div>
-
-    <div class="footer">
-        © セドリン Ver 2.0
+    <div class="card">
+        <span class="section-title">【相場検索】</span>
+        <div class="search-grid">
+            <a href="javascript:void(0)" class="btn-search" onclick="searchMarket('paypay')">Yahooフリマ</a>
+            <a href="javascript:void(0)" class="btn-search" onclick="searchMarket('yahuoku')">ヤフオク</a>
+            <a href="javascript:void(0)" class="btn-search" onclick="searchMarket('rakuma')">ラクマ</a>
+            <a href="javascript:void(0)" class="btn-search" onclick="searchMarket('mercari')">メルカリ</a>
+        </div>
     </div>
 </div>
 
 <script>
     function calculate() {
-        // 入力値の取得
-        const sellPrice = parseInt(document.getElementById('sellPrice').value);
-        const buyPrice = parseInt(document.getElementById('buyPrice').value);
-        const platformFeeRate = parseFloat(document.getElementById('platform').value);
-        const shippingCost = parseInt(document.getElementById('shipping').value);
+        const sellPrice = parseInt(document.getElementById('sellPrice').value) || 0;
+        const costPrice = parseInt(document.getElementById('costPrice').value) || 0;
+        const feeRate = parseFloat(document.querySelector('input[name="platform"]:checked').value);
+        const shipping = parseInt(document.querySelector('input[name="shipping"]:checked').value);
 
-        // 未入力チェック
-        if (isNaN(sellPrice) || isNaN(buyPrice)) {
-            alert('販売価格と仕入価格を入力してください。');
+        if (sellPrice === 0) {
+            alert("販売価格を入力してください");
             return;
         }
 
-        // --- 利益計算 ---
-        // 1. 販売手数料を計算
-        const fee = Math.floor(sellPrice * platformFeeRate);
+        const fee = Math.floor(sellPrice * feeRate);
+        const profit = sellPrice - costPrice - fee - shipping;
+        const margin = ((profit / sellPrice) * 100).toFixed(1);
+
+        displayResult(profit, margin, fee, shipping);
+    }
+
+    function displayResult(profit, margin, fee, shipping) {
+        const resArea = document.getElementById('result-area');
+        const resStars = document.getElementById('result-stars');
+        const resJudg = document.getElementById('result-judgment');
         
-        // 2. 利益計算式：販売価格 − 仕入価格 − 販売手数料 − 送料
-        const profit = sellPrice - buyPrice - fee - shippingCost;
+        document.getElementById('res-profit').innerText = profit.toLocaleString() + "円";
+        document.getElementById('res-margin').innerText = margin + "%";
+        document.getElementById('res-fee').innerText = fee.toLocaleString() + "円";
+        document.getElementById('res-ship').innerText = shipping.toLocaleString() + "円";
 
-        // 結果エリアを表示
-        const resultArea = document.getElementById('result-area');
-        const judgment = document.getElementById('judgment');
-        const profitAmount = document.getElementById('profitAmount');
-        const feeDetail = document.getElementById('feeDetail');
+        resArea.className = "card animate-pop"; // Reset class
+        resArea.style.display = "block";
 
-        resultArea.style.display = 'block';
-        profitAmount.innerText = profit.toLocaleString();
-        feeDetail.innerText = `(手数料: ${fee}円 / 送料: ${shippingCost}円)`;
+        let judge = "";
+        let stars = "";
+        let bgClass = "";
 
-        // --- 判定ロジック ---
-        if (profit >= 1000) {
-            judgment.innerText = "✅ 買い！";
-            resultArea.className = "buy-bg";
-            resultArea.classList.remove("pass-bg");
+        if (margin >= 30 && profit >= 1000) {
+            judge = "神商品";
+            stars = "★★★★★";
+            bgClass = "bg-god";
+        } else if (margin >= 20) {
+            judge = "買い";
+            stars = "★★★★☆";
+            bgClass = "bg-buy";
+        } else if (margin >= 10) {
+            judge = "微妙";
+            stars = "★★★☆☆";
+            bgClass = "bg-mid";
+        } else if (margin > 0) {
+            judge = "厳しい";
+            stars = "★★☆☆☆";
+            bgClass = "bg-hard";
         } else {
-            judgment.innerText = "❌ 見送り";
-            resultArea.className = "pass-bg";
-            resultArea.classList.remove("buy-bg");
+            judge = "見送り";
+            stars = "★☆☆☆☆";
+            bgClass = "bg-skip";
         }
 
-        // スマホで結果が見えるように少しスクロール
-        window.scrollTo({
-            top: document.body.scrollHeight,
-            behavior: 'smooth'
-        });
-    }
-</script>
-<hr style="margin:30px 0;">
+        resJudg.innerText = judge;
+        resStars.innerText = stars;
+        resArea.classList.add(bgClass);
 
-<h2 style="text-align:center;">🔍 相場検索</h2>
-
-<div style="display:grid;gap:10px;">
-
-<button class="calc-btn" onclick="searchYahoo()">Yahooフリマで検索</button>
-
-<button class="calc-btn" onclick="searchAuction()">ヤフオクで検索</button>
-
-<button class="calc-btn" onclick="searchRakuma()">ラクマで検索</button>
-
-<button class="calc-btn" onclick="searchMercari()">メルカリで検索（参考相場）</button>
-
-</div>
-
-<script>
-
-function getKeyword(){
-    const jan=document.getElementById("janCode").value.trim();
-
-    if(jan===""){
-        alert("JANコードを入力してください。");
-        return null;
+        // Scroll to result
+        resArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    return encodeURIComponent(jan);
-}
+    function searchMarket(site) {
+        const jan = document.getElementById('janCode').value;
+        if (!jan) {
+            alert("JANコードを入力してください");
+            return;
+        }
 
-function searchYahoo(){
-    const k=getKeyword();
-    if(!k)return;
-    window.open("https://paypayfleamarket.yahoo.co.jp/search/"+k,"_blank");
-}
-
-function searchAuction(){
-    const k=getKeyword();
-    if(!k)return;
-    window.open("https://auctions.yahoo.co.jp/search/search?p="+k,"_blank");
-}
-
-function searchRakuma(){
-    const k=getKeyword();
-    if(!k)return;
-    window.open("https://fril.jp/s?query="+k,"_blank");
-}
-
-function searchMercari(){
-    const k=getKeyword();
-    if(!k)return;
-    window.open("https://jp.mercari.com/search?keyword="+k,"_blank");
-}
-
+        let url = "";
+        switch(site) {
+            case 'paypay':
+                url = `https://paypayfleamarket.yahoo.co.jp/search/${jan}`;
+                break;
+            case 'yahuoku':
+                url = `https://auctions.yahoo.co.jp/search/search?p=${jan}`;
+                break;
+            case 'rakuma':
+                url = `https://fril.jp/search/${jan}`;
+                break;
+            case 'mercari':
+                url = `https://jp.mercari.com/search?keyword=${jan}`;
+                break;
+        }
+        window.open(url, '_blank');
+    }
 </script>
+
 </body>
 </html>
