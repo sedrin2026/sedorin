@@ -234,6 +234,59 @@
         });
     }
 </script>
+<hr style="margin:30px 0;">
 
+<h2 style="text-align:center;">🔍 相場検索</h2>
+
+<div style="display:grid;gap:10px;">
+
+<button class="calc-btn" onclick="searchYahoo()">Yahooフリマで検索</button>
+
+<button class="calc-btn" onclick="searchAuction()">ヤフオクで検索</button>
+
+<button class="calc-btn" onclick="searchRakuma()">ラクマで検索</button>
+
+<button class="calc-btn" onclick="searchMercari()">メルカリで検索（参考相場）</button>
+
+</div>
+
+<script>
+
+function getKeyword(){
+    const jan=document.getElementById("janCode").value.trim();
+
+    if(jan===""){
+        alert("JANコードを入力してください。");
+        return null;
+    }
+
+    return encodeURIComponent(jan);
+}
+
+function searchYahoo(){
+    const k=getKeyword();
+    if(!k)return;
+    window.open("https://paypayfleamarket.yahoo.co.jp/search/"+k,"_blank");
+}
+
+function searchAuction(){
+    const k=getKeyword();
+    if(!k)return;
+    window.open("https://auctions.yahoo.co.jp/search/search?p="+k,"_blank");
+}
+
+function searchRakuma(){
+    const k=getKeyword();
+    if(!k)return;
+    window.open("https://fril.jp/s?query="+k,"_blank");
+}
+
+function searchMercari(){
+    const k=getKeyword();
+    if(!k)return;
+    window.open("https://jp.mercari.com/search?keyword="+k,"_blank");
+}
+
+</script>
 </body>
 </html>
